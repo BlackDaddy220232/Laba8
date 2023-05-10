@@ -9,17 +9,9 @@
 using namespace std;
 // Функция для генерации случайных строк заданной длины
 char* Generaterandomstring(int length) {
-    static const char alphanum[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
-
-    static mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
-    static uniform_int_distribution<int> distribution(0, sizeof(alphanum) - 1);
-
     char* str = new char[length+1];
     for (int i = 0; i < length; ++i) {
-        str[i] = alphanum[distribution(rng)];
+        str[i] = 'a' + rand()%26;
     }
     str[length] = '\0';
 
@@ -35,7 +27,7 @@ void FillUnorderedMap(unordered_map<char*, char*, std::hash<char*>, std::equal_t
 
 void benchmark() {
     unordered_map<char*,char*> login_password_map;
-    int num_entries = 1000;
+    int num_entries = 50000;
     vector<pair<char*,char*>> data;
     data.reserve(num_entries);
     for (int i = 0; i < num_entries; ++i) {
@@ -43,7 +35,11 @@ void benchmark() {
         char* password = Generaterandomstring(12); // Генерация случайного пароля
         data.emplace_back(login,password);
     }
-    Hash *mas=(Hash*)malloc(300000*sizeof(Hash));
+    Hash *mas=(Hash*)malloc(3000000*sizeof(Hash));
+    for(int i = 0; i < 3000000; i++){
+        mas[i].empty = true;
+        mas[i].next = NULL;
+    }
     auto start=clock();
     for (const auto& entry:data)
     {
@@ -51,37 +47,37 @@ void benchmark() {
     }
     auto end=clock();
     long int MyCreate=end-start;
-    auto start=clock();
+    clock();
     FillUnorderedMap(login_password_map, data);
-    auto end=clock();
+    end=clock();
     long int NotMyCreate=end-start;
-    auto start=clock();
+    start=clock();
     for (const auto& entry: data)
     {
         Delete(mas,entry.first);
     }
-    auto end=clock();
+    end=clock();
     long int MyDelete=end-start;
-    auto start=clock();
+    start=clock();
     for(const auto& entry: data)
     {
         Search(mas,entry.first);
     }
-    auto end=clock();
+    end=clock();
     long int MySearch=end-start;
-    auto start=clock();
+    start=clock();
     for (auto& entry : login_password_map) {
         delete[] entry.first;
         delete[] entry.second;
     }
-    auto end=clock();
+    end=clock();
     long int NotMyDelete=end-start;
-    auto start=clock();
+    start=clock();
     for (const auto& entry: data)
     {
         char* result=login_password_map[entry.first];
     }
-    auto end=clock();
+    end=clock();
     long int NotMySearch=end-start;
     printf("Write\nMy table\nTime:%ld\nNot my table\nTime:%ld\nK=%lf\n",MyCreate,NotMyCreate,1.0*MyCreate/NotMyCreate);
     printf("Read\nMy table\nTime:%ld\nNot my table\nTime:%ld\nK=%lf\n",MySearch,NotMySearch,1.0*MySearch/NotMySearch);

@@ -32,7 +32,6 @@ void Menu(Hash *Table)
 				printf("There is no such element!\n");
 			}
             printf("Press 0 to exit or ENTER\n");
-			_getch();
 		} while (buf==NULL&&_getch()!='0');
 		break;
 		case 2:
@@ -42,7 +41,6 @@ void Menu(Hash *Table)
 			password=Input();
 			HandleCreate(Table,login,password);
 			printf("Press 0 to exit or ENTER\n");
-			_getch();
 		break;
 		case 3:
 		do
@@ -57,7 +55,6 @@ void Menu(Hash *Table)
 				printf("There is no such element!\n");
 			}
             printf("Press 0 to exit or ENTER\n");
-			_getch();
 		} while (buf==NULL&&_getch()!='0');
 		break;
 		case 4:
@@ -70,7 +67,6 @@ void Menu(Hash *Table)
                 printf("There is no such element!\n");
             }
             printf("Press 0 to exit or ENTER\n");
-			_getch();
         } while (buf==NULL&&_getch()!='0');
         break;
 		case 5:
@@ -80,6 +76,7 @@ void Menu(Hash *Table)
 		exit(1);
         break;
 	}
+    _getch();
     system("cls");
 	}
 }

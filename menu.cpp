@@ -6,6 +6,7 @@
 #include"intcheck.h"
 #include"hash.h"
 #include"Windows.h"
+#include"Bencmarks.h"
 void Menu(Hash *Table)
 {
 	int choice;
@@ -13,13 +14,13 @@ void Menu(Hash *Table)
 	char* login,*password;
 	while(true)
 	{
-		printf("\nMenu:\n1.Search\n2.Add\n3.Change\n4.Delete\n9.End Programm\nYour choice:");
+		printf("\nMenu:\n1.Search\n2.Add\n3.Change\n4.Delete\n5.Benchmark\n9.End Programm\nYour choice:");
 		switch(choice=Inputcheck())
 	{
 		case 1:
 		do
 		{
-			printf("Input login to find password: ");
+			printf("\nInput login to find password: ");
 			login=Input();
 			buf=Search(Table,login);
 			if(buf!=NULL)
@@ -35,8 +36,9 @@ void Menu(Hash *Table)
 		} while (buf==NULL&&_getch()!='0');
 		break;
 		case 2:
-			printf("Input login and password to add: ");
+			printf("\nInput login and password to add: ");
 			login=Input();
+			printf("\nInput password: ");
 			password=Input();
 			HandleCreate(Table,login,password);
 			printf("Press 0 to exit or ENTER\n");
@@ -71,6 +73,9 @@ void Menu(Hash *Table)
 			_getch();
         } while (buf==NULL&&_getch()!='0');
         break;
+		case 5:
+		benchmark();
+		break;
         case 9:
 		exit(1);
         break;

@@ -15,7 +15,15 @@ int main()
         printf("Not found file");
     }
     printf("Input size tabble\n");
-    int Size = Inputcheck();
+    int Size;
+    do
+    {
+        Size = Inputcheck();
+        if (Size <= 0)
+        {
+            printf("Invalid number!\n");
+        }
+    } while (Size <= 0);
     Hash* HashTabble;
 	HashTabble = (Hash*)malloc(Size * sizeof(Hash));
     for (int  i = 0; i < Size; i++)

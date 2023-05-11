@@ -33,7 +33,15 @@ void benchmark() {
     srand(time(NULL));
     unordered_map<char*,char*> login_password_map;
     printf("Input number of data:\n");
-    int num_entries = Inputcheck();
+    int num_entries;
+    do
+    {
+        num_entries = Inputcheck();
+        if (num_entries <= 0)
+        {
+            printf("Invalid number!\n");
+        }
+    } while (num_entries <= 0);
     vector<pair<char*,char*>> data;
     data.reserve(num_entries);
     for (int i = 0; i < num_entries; ++i) {
@@ -42,7 +50,15 @@ void benchmark() {
         data.emplace_back(login,password);
     }
     printf("Input table size:\n");
-    int Size = Inputcheck();
+    int Size;
+    do
+    {
+        Size = Inputcheck();
+        if (Size <= 0)
+        {
+            printf("Invalid number!\n");
+        }
+    } while (Size <= 0);
     Hash *mas=(Hash*)malloc(Size*sizeof(Hash));
     for(int i = 0; i < Size; i++){
         mas[i].empty = true;

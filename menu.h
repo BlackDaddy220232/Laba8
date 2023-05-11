@@ -3,4 +3,4 @@
 #include<stdlib.h>
 #include<conio.h>
 #include"hash.h"
-void Menu(Hash *Table);
+void Menu(Hash *Table, int Size);

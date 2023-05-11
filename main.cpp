@@ -5,6 +5,7 @@
 #include<unordered_map>
 #include"hash.h"
 #include"menu.h"
+#include"intcheck.h"
 int main()
 {
     FILE* file;
@@ -13,13 +14,15 @@ int main()
     {
         printf("Not found file");
     }
+    printf("Input size tabble\n");
+    int Size = Inputcheck();
     Hash* HashTabble;
-	HashTabble = (Hash*)malloc(400 * sizeof(Hash));
-    for (int  i = 0; i < 400; i++)
+	HashTabble = (Hash*)malloc(Size * sizeof(Hash));
+    for (int  i = 0; i < Size; i++)
     {
         HashTabble[i].empty = true;
         HashTabble[i].next = NULL;
     }
-    Create(HashTabble, file);
-	Menu(HashTabble);
+    Create(HashTabble, file,Size);
+	Menu(HashTabble,Size);
 }

@@ -7,7 +7,7 @@
 #include"hash.h"
 #include"Windows.h"
 #include"Bencmarks.h"
-void Menu(Hash *Table)
+void Menu(Hash *Table,int Size)
 {
 	int choice;
 	Hash *buf;
@@ -22,7 +22,7 @@ void Menu(Hash *Table)
 		{
 			printf("\nInput login to find password: ");
 			login=Input();
-			buf=Search(Table,login);
+			buf=Search(Table,login,Size);
 			if(buf!=NULL)
 			{
 				printf("Password: %s",buf->password);
@@ -31,7 +31,7 @@ void Menu(Hash *Table)
 			{
 				printf("There is no such element!\n");
 			}
-            printf("Press 0 to exit or ENTER\n");
+            printf("\nPress 0 to exit or ENTER\n");
 		} while (buf==NULL&&_getch()!='0');
 		break;
 		case 2:
@@ -39,7 +39,7 @@ void Menu(Hash *Table)
 			login=Input();
 			printf("\nInput password: ");
 			password=Input();
-			HandleCreate(Table,login,password);
+			HandleCreate(Table,login,password,Size);
 			printf("Press 0 to exit or ENTER\n");
 		break;
 		case 3:
@@ -49,12 +49,12 @@ void Menu(Hash *Table)
 			login=Input();
             printf("Input password: ");
 			password=Input();
-			buf=Change(Table,login,password);
+			buf=Change(Table,login,password,Size);
 			if(buf==NULL)
 			{
 				printf("There is no such element!\n");
 			}
-            printf("Press 0 to exit or ENTER\n");
+            printf("\nPress 0 to exit or ENTER\n");
 		} while (buf==NULL&&_getch()!='0');
 		break;
 		case 4:
@@ -62,11 +62,11 @@ void Menu(Hash *Table)
         {
             printf("Input login to delete element: ");
             login=Input();
-            if((buf=Delete(Table,login))==NULL)
+            if((buf=Delete(Table,login,Size))==NULL)
             {
                 printf("There is no such element!\n");
             }
-            printf("Press 0 to exit or ENTER\n");
+            printf("\nPress 0 to exit or ENTER\n");
         } while (buf==NULL&&_getch()!='0');
         break;
 		case 5:

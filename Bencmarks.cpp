@@ -6,10 +6,15 @@
 #include <vector>
 #include"hash.h"
 #include <time.h>
+#include"intcheck.h"
 using namespace std;
-// Функция для генерации случайных строк заданной длины
 char* Generaterandomstring(int length) {
-    char* str = new char[length+1];
+    char* str = (char*)calloc(length + 1, sizeof(char));
+    if (!str)
+    {
+        printf("Smert");
+        exit(1);
+    }
     for (int i = 0; i < length; ++i) {
         str[i] = 'a' + rand()%26;
     }
@@ -18,7 +23,6 @@ char* Generaterandomstring(int length) {
     return str;
 }
 
-// Функция для заполнения unordered_map рандомными логинами и паролями
 void FillUnorderedMap(unordered_map<char*, char*, std::hash<char*>, std::equal_to<char*>>& login_password_map, const vector<pair<char*, char*>>& data) {
     for (const auto& entry : data) {
         login_password_map[entry.first] = entry.second;
@@ -26,45 +30,48 @@ void FillUnorderedMap(unordered_map<char*, char*, std::hash<char*>, std::equal_t
 }
 
 void benchmark() {
+    srand(time(NULL));
     unordered_map<char*,char*> login_password_map;
-    int num_entries = 50000;
+    printf("Input number of data:\n");
+    int num_entries = Inputcheck();
     vector<pair<char*,char*>> data;
     data.reserve(num_entries);
     for (int i = 0; i < num_entries; ++i) {
-        char* login = Generaterandomstring(8); // Генерация случайного логина
-        char* password = Generaterandomstring(12); // Генерация случайного пароля
+        char* login = Generaterandomstring(12); 
+        char* password = Generaterandomstring(12); 
         data.emplace_back(login,password);
     }
-    Hash *mas=(Hash*)malloc(3000000*sizeof(Hash));
-    for(int i = 0; i < 3000000; i++){
+    printf("Input table size:\n");
+    int Size = Inputcheck();
+    Hash *mas=(Hash*)malloc(Size*sizeof(Hash));
+    for(int i = 0; i < Size; i++){
         mas[i].empty = true;
         mas[i].next = NULL;
     }
     auto start=clock();
     for (const auto& entry:data)
     {
-        HandleCreate(mas,entry.first,entry.second);
+        HandleCreate(mas,entry.first,entry.second,Size);
     }
     auto end=clock();
     long int MyCreate=end-start;
-    clock();
     FillUnorderedMap(login_password_map, data);
     end=clock();
     long int NotMyCreate=end-start;
     start=clock();
-    for (const auto& entry: data)
-    {
-        Delete(mas,entry.first);
-    }
-    end=clock();
-    long int MyDelete=end-start;
-    start=clock();
     for(const auto& entry: data)
     {
-        Search(mas,entry.first);
+        Search(mas,entry.first,Size);
     }
     end=clock();
     long int MySearch=end-start;
+    start = clock();
+    for (const auto& entry : data)
+    {
+        Delete(mas, entry.first,Size);
+    }
+    end = clock();
+    long int MyDelete = end - start;
     start=clock();
     for (auto& entry : login_password_map) {
         delete[] entry.first;

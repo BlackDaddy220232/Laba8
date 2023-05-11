@@ -14,10 +14,10 @@ int Strlen(char* mas)
     }
     return (i);
 }
-Hash* Delete(Hash* table,char* name)
+Hash* Delete(Hash* table,char* name,int Size)
 {
     Hash* elem;
-	if((elem=Search(table,name))==NULL)
+	if((elem=Search(table,name,Size))==NULL)
 	{
         return NULL;
 	}
@@ -28,10 +28,10 @@ Hash* Delete(Hash* table,char* name)
         elem->empty=true;
     }
 }
-Hash* Change(Hash* table,char* name, char* password)
+Hash* Change(Hash* table,char* name, char* password,int Size)
 {
 	Hash* elem;
-	if((elem=Search(table,name))==NULL)
+	if((elem=Search(table,name,Size))==NULL)
 	{
         return NULL;
 	}
@@ -40,14 +40,15 @@ Hash* Change(Hash* table,char* name, char* password)
         elem->password=password;
 	}
 }
-void HandleCreate(Hash* tabble, char* Login, char* Password)
+void HandleCreate(Hash* tabble, char* Login, char* Password,int Size)
 {
-	if(Search(tabble,Login)!=NULL)
+    Hash* elem = Search(tabble, Login, Size);
+	if(elem!=NULL)
 	{
-		printf("You cant create the same element\n");
-		Menu(tabble);
+        elem->login = Login;
+        elem->password = Password;
 	}
-	unsigned int hash=MurMurHash(Login,Strlen(Login),0);
+	unsigned int hash=MurMurHash(Login,Strlen(Login),0,Size);
 	if(tabble[hash].empty==true)
 	{
 		tabble[hash].login =(char*)malloc(Strlen(Login)+1 * sizeof(char));
@@ -61,7 +62,7 @@ void HandleCreate(Hash* tabble, char* Login, char* Password)
 	}
 
 }
-void Create(Hash* tabble, FILE* file)
+void Create(Hash* tabble, FILE* file,int Size)
 {
     char a;
     char* mas= (char*)malloc(1 * sizeof(char));
@@ -80,7 +81,8 @@ void Create(Hash* tabble, FILE* file)
             mas[i] = '\0';
             Login=GetLogin(mas);
             password=GetPassword(mas);
-            hashkey = MurMurHash(Login, Strlen(Login), 0);
+            hashkey = MurMurHash(Login, Strlen(Login), 0,Size);
+            printf("%lu\n", hashkey);
             if (tabble[hashkey].empty == true)
             {
                 tabble[hashkey].login =(char*)malloc(Strlen(Login)+1 * sizeof(char));
@@ -96,20 +98,24 @@ void Create(Hash* tabble, FILE* file)
         }
     }
 }
-Hash* Search(Hash* Table,char* key)
+Hash* Search(Hash* Table,char* key,int Size)
 {
     Hash* element;
     unsigned int hash;
-    hash = MurMurHash(key, Strlen(key), 0);
-    if (Table[hash].empty!=true&&(strcmp(Table[hash].login, key)==0))//тут ошибка
+    hash = MurMurHash(key, Strlen(key), 0,Size);
+    if (Table[hash].empty != true)
     {
-		return element=&Table[hash];
+        if ((strcmp(Table[hash].login, key) == 0))//тут ошибка
+        {
+            return element = &Table[hash];
+        }
     }
     else
     {
         element=SearchinList(Table[hash].next, key);
 		return element;
     }
+    return NULL;
 }
 Hash* SearchinList(Hash* head, char* key)
 {
@@ -171,7 +177,7 @@ char* GetPassword(char* mas)
     buf[i] = '\0';
     return buf;
 }
-unsigned int MurMurHash(char* key, unsigned int length, unsigned int seed)
+unsigned int MurMurHash(char* key, unsigned int length, unsigned int seed,int Size)
 {
     const unsigned int bestnumber = 0x5bd1e995; //число 1540483477, эксперементально подобранно для улучшения оптимизации и распределения, вроде бы близко к золотому сечению
     const int r = 24;//тоже эксперементально, для того чтобы разбросать наши биты в части числа
@@ -208,5 +214,5 @@ unsigned int MurMurHash(char* key, unsigned int length, unsigned int seed)
     h ^= h >> 13;
     h *= bestnumber;
     h ^= h >> 15;
-    return h%400;
+    return h%Size;
 }
